@@ -2,17 +2,31 @@ package wordle
 
 import (
 	"fmt"
+	"wordle/words"
+)
 
-	"github.com/photonhq/wordle/words"
+const (
+	maxGuesses = 6
+	wordSize   = 5
 )
 
 type wordleState struct {
 	// word is the word that the user is trying to guess
-	word [5]byte
+	word [wordSize]byte
 	// guesses holds the guesses that the user has made
-	guesses [6]string
+	guesses [maxGuesses]guess
 	// currGuess is the index of the available slot in guesses
 	currGuess int
+}
+
+// guess is an attempt to guess the word
+type guess [wordSize]letter
+
+type letter struct {
+	// char is the letter that this struct represents
+	char byte
+	// status is the state of the letter (absent, present, correct)
+	status letterStatus
 }
 
 // letterStatus can be none, correct, present, or absent
@@ -40,14 +54,19 @@ func newWordleState(word string) wordleState {
 	return myWordle
 }
 
-func newLetter(character byte) Letter {
-	myLetterStatus := Letter{character: character, status: none}
-	return myLetterStatus
+// newLetter builds a new letter from a byte
+func newLetter(char byte) letter {
+	return letter{char: char, status: none}
 }
 
-type Letter struct {
-	character byte
-	status    letterStatus
+// newGuess builds a new guess from a string
+func newGuess(guessedWord string) guess {
+	guess := guess{}
+	for i, c := range guessedWord {
+		guess[i] = newLetter(byte(c))
+	}
+
+	return guess
 }
 
 func wordle() {

@@ -36,13 +36,37 @@ func TestNewWordleState(t *testing.T) {
 }
 
 func TestLetter(t *testing.T) {
-	var TestLetter Letter
+	var TestLetter letter
 	TestLetter = newLetter(byte("H"[0]))
-	if !(TestLetter.character == byte("H"[0])) {
+	if !(TestLetter.char == byte("H"[0])) {
 		t.Logf(" lp0 on fire   ")
 
 	}
-	if !(TestLetter.status == none) {
+	if !(TestLetter.status == 0) {
 		t.Logf(" lp0 on fire   ")
 	}
+}
+
+//newGuess should take in a string and return a new guess. You should loop over each letter in the string and convert them to letter structs.
+
+func TestNewGuess(t *testing.T) {
+	t.Log("Running TestNewGuess")
+	testWord := "GUESS"
+	TestGuess := newGuess(testWord)
+
+	for i, v := range testWord {
+		t.Logf("Comparing %c to %c. Status of guess is: %d", v, TestGuess[i].char, TestGuess[i].status)
+		if byte(v) != TestGuess[i].char {
+			t.Log("The chars don't match!")
+		}
+
+		if byte(v) != TestGuess[i].char {
+			t.Log("The chars don't match!")
+		}
+
+		if TestGuess[i].status != 0 {
+			t.Log("The guess status is not none!")
+		}
+	}
+
 }
