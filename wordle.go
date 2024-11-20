@@ -40,6 +40,16 @@ func newWordleState(word string) wordleState {
 	return myWordle
 }
 
+func newLetter(character byte) Letter {
+	myLetterStatus := Letter{character: character, status: none}
+	return myLetterStatus
+}
+
+type Letter struct {
+	character byte
+	status    letterStatus
+}
+
 func wordle() {
 	fmt.Println("welcome to wordle!")
 	newWord := words.GetWord()
