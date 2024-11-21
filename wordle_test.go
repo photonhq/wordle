@@ -70,3 +70,28 @@ func TestNewGuess(t *testing.T) {
 	}
 
 }
+
+func TestUpdateLettersWithWord(t *testing.T) {
+	guessWord := "YIELD"
+	guess := newGuess(guessWord)
+
+	var word [wordSize]byte
+	copy(word[:], "HELLO")
+	guess.updateLettersWithWord(word)
+
+	statuses := []letterStatus{
+		absent,  // "Y" is not in "HELLO"
+		absent,  // "I" is not in "HELLO"
+		present, // "E" is in "HELLO" but not in the correct position
+		correct, // "L" is in "HELLO" and in the correct position
+		absent,  // "D" is not in "HELLO"
+	}
+
+	// Check that statuses are correct
+	for i, j := range statuses {
+		if j != guess[i].status {
+			t.Fatalf("%d is not %d", j, guess[i].status)
+		}
+
+	}
+}

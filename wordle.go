@@ -69,6 +69,29 @@ func newGuess(guessedWord string) guess {
 	return guess
 }
 
+// updateLettersWithWord updates the status of the letters in the guess based on a word
+func (g *guess) updateLettersWithWord(word [wordSize]byte) {
+
+	for i, _ := range g {
+		// c.char is a letter
+
+		if g[i].char == word[i] && g[i].status == none {
+			g[i].status = correct
+		}
+
+		for _, v := range word {
+			if v == g[i].char && g[i].status == none {
+				g[i].status = present
+
+			}
+		}
+		if g[i].status == none {
+			g[i].status = absent
+		}
+	}
+
+}
+
 func wordle() {
 	fmt.Println("welcome to wordle!")
 	newWord := words.GetWord()
