@@ -1,7 +1,10 @@
 package wordle
 
 import (
+	"errors"
 	"fmt"
+	"log"
+	"strings"
 	"wordle/words"
 )
 
@@ -89,6 +92,40 @@ func (g *guess) updateLettersWithWord(word [wordSize]byte) {
 			g[i].status = absent
 		}
 	}
+
+}
+
+func guessToString(g guess) string {
+	var s strings.Builder
+	for i := 0; i < len(g); i++ {
+		s.WriteString(string(g[i].char))
+	}
+	return s.String()
+}
+
+// appendGuess adds a guess to the wordleState. It returns an error
+// if the guess is invalid.
+func (w *wordleState) appendGuess(g guess) error {
+	var err error
+
+	if w.currGuess < maxGuesses {
+		if len(g) != wordSize {
+			fmt.Printf("Your guess is not of lenth %d\n", wordSize)
+			err = errors.New("Guess is not correct length")
+		}
+
+		if !words.IsWord(guessToString(g)) {
+			fmt.Println("Your guess is not a valid word")
+			err = errors.New("Guess is not a valid word")
+		}
+		w.currGuess++
+
+	} else {
+		log.Fatalf("Game over :(")
+		err = errors.New("Too many guesses")
+	}
+
+	return err
 
 }
 
