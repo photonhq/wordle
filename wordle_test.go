@@ -72,13 +72,19 @@ func TestNewGuess(t *testing.T) {
 }
 
 func TestAppendGuess(t *testing.T) {
+	var err error
+	
 	guessWord := "YIELD"
 	guess := newGuess(guessWord)
 
 	word := "HELLO"
 	ws := newWordleState(word)
 
-	_ = ws.appendGuess(guess)
+	err = ws.appendGuess(guess)
+
+	if (err != nil) {
+		t.Fatalf("an error occurred")
+	}
 }
 
 func TestUpdateLettersWithWord(t *testing.T) {
