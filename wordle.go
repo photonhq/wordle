@@ -125,11 +125,9 @@ func (w *wordleState) appendGuess(g guess) error {
 		err = errors.New("Too many guesses")
 	}
 
-	// for i := 0; i < len(g); i++ {
-	// 	w.guesses[w.currGuess][i] = g[i]
-	// 	fmt.Printf("g %c. w.guesses %c\n", g[i], w.guesses[w.currGuess][i])
-	// }
 	w.guesses[w.currGuess-1] = g
+
+	// excessively verbose print statement
 	for i := 0; i < len(g); i++ {
 		fmt.Printf("g %c. w.guesses %c\n", g[i], w.guesses[w.currGuess-1][i])
 	}
