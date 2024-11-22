@@ -1,6 +1,9 @@
 package wordle
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+)
 
 func statusToString(status letterStatus) string {
 	switch status {
@@ -73,7 +76,7 @@ func TestNewGuess(t *testing.T) {
 
 func TestAppendGuess(t *testing.T) {
 	var err error
-	
+
 	guessWord := "YIELD"
 	guess := newGuess(guessWord)
 
@@ -82,7 +85,7 @@ func TestAppendGuess(t *testing.T) {
 
 	err = ws.appendGuess(guess)
 
-	if (err != nil) {
+	if err != nil {
 		t.Fatalf("an error occurred")
 	}
 }
@@ -110,4 +113,74 @@ func TestUpdateLettersWithWord(t *testing.T) {
 		}
 
 	}
+}
+
+func TestIsWordGuessed(t *testing.T) {
+
+	var word [wordSize]byte
+	copy(word[:], "HELLO")
+
+	guessWordIncorrect := "YIELD"
+	guessIncorrect := newGuess(guessWordIncorrect)
+
+	guessWordCorrect := "HELLO"
+	guessCorrect := newGuess(guessWordCorrect)
+
+	ws := newWordleState(guessWordCorrect)
+
+	//Incorrect Guess
+	guessIncorrect.updateLettersWithWord(word)
+	ws.appendGuess(guessIncorrect)
+	if ws.isWordGuessed() {
+		t.Fatal("Word should be incorrect.")
+	}
+
+	//Correct Guess
+	guessCorrect.updateLettersWithWord(word)
+	ws.appendGuess(guessCorrect)
+	if !ws.isWordGuessed() {
+		t.Fatal("Word should be Correct.")
+	}
+
+}
+
+func TestShouldEndGame(t *testing.T) {
+
+	var word [wordSize]byte
+	copy(word[:], "HELLO")
+
+	guessWordIncorrect := "YIELD"
+	guessIncorrect := newGuess(guessWordIncorrect)
+
+	guessWordCorrect := "HELLO"
+	guessCorrect := newGuess(guessWordCorrect)
+
+	ws := newWordleState(guessWordCorrect)
+
+	//Incorrect Guess
+	guessIncorrect.updateLettersWithWord(word)
+	ws.appendGuess(guessIncorrect)
+	if ws.shouldEndGame() {
+		t.Fatal("Game should not end")
+	}
+
+	//Correct Guess
+	guessCorrect.updateLettersWithWord(word)
+	ws.appendGuess(guessCorrect)
+	if !ws.shouldEndGame() {
+		t.Fatal("Game should end")
+	}
+
+	// Add too many
+	for i := 0; i < maxGuesses; i++ {
+		guessIncorrect.updateLettersWithWord(word)
+		ws.appendGuess(guessIncorrect)
+
+	}
+
+	fmt.Printf("%d\n", ws.currGuess)
+	if !ws.shouldEndGame() {
+		t.Fatal("Too many guesses, game should end")
+	}
+
 }

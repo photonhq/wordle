@@ -3,7 +3,6 @@ package wordle
 import (
 	"errors"
 	"fmt"
-	"log"
 	"strings"
 	"wordle/words"
 )
@@ -111,7 +110,7 @@ func (w *wordleState) appendGuess(g guess) error {
 	if w.currGuess < maxGuesses {
 		if len(g) != wordSize {
 			fmt.Printf("Your guess is not of lenth %d\n", wordSize)
-			err = errors.New("Guess is not correct length")
+			err = errors.New("guess is not correct length")
 		}
 
 		if !words.IsWord(guessToString(g)) {
@@ -120,29 +119,30 @@ func (w *wordleState) appendGuess(g guess) error {
 		}
 		w.currGuess++
 
-	} else {
-		log.Fatalf("Game over :(")
-		err = errors.New("Too many guesses")
 	}
 
 	w.guesses[w.currGuess-1] = g
-
-	// excessively verbose print statement
-	for i := 0; i < len(g); i++ {
-		fmt.Printf("g %c. w.guesses %c\n", g[i], w.guesses[w.currGuess-1][i])
-	}
 
 	return err
 
 }
 
-func wordle() {
-	fmt.Println("welcome to wordle!")
-	newWord := words.GetWord()
-	myWordleState := newWordleState(newWord)
-	fmt.Println(myWordleState.word)
+// isWordGuessed returns true when the latest guess is the correct word
+func (w *wordleState) isWordGuessed() bool {
+
+	for i := 0; i < wordSize; i++ {
+		if w.guesses[w.currGuess-1][i].char != w.word[i] {
+			return false
+		}
+	}
+	return true
+
 }
 
-func main() {
-	wordle()
+func (w *wordleState) shouldEndGame() bool {
+	if w.currGuess > maxGuesses-1 {
+		return true
+	} else {
+		return w.isWordGuessed()
+	}
 }
