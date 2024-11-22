@@ -71,6 +71,16 @@ func TestNewGuess(t *testing.T) {
 
 }
 
+func TestAppendGuess(t *testing.T) {
+	guessWord := "YIELD"
+	guess := newGuess(guessWord)
+
+	word := "HELLO"
+	ws := newWordleState(word)
+
+	_ = ws.appendGuess(guess)
+}
+
 func TestUpdateLettersWithWord(t *testing.T) {
 	guessWord := "YIELD"
 	guess := newGuess(guessWord)
